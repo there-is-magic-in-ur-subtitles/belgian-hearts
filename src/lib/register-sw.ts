@@ -14,7 +14,8 @@ function isPreviewOrDevelopment() {
     hostname.endsWith(".lovableproject-dev.com") ||
     hostname === "beta.lovable.dev" ||
     hostname.endsWith(".beta.lovable.dev") ||
-    new URLSearchParams(search).has("sw") && new URLSearchParams(search).get("sw") === "off"
+    (new URLSearchParams(search).has("sw") &&
+      new URLSearchParams(search).get("sw") === "off")
   );
 }
 
