@@ -37,8 +37,9 @@ export default defineConfig({
           ],
         },
         workbox: {
-          globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
-          maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+          // 1. Inclusion de TOUS les formats d'images dans le globPatterns
+          globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp,gif}"],
+          maximumFileSizeToCacheInBytes: 20 * 1024 * 1024, // Augmenté à 20 Mo pour vos nombreuses photos
           navigateFallbackDenylist: [/^\/~oauth/],
           runtimeCaching: [
             {
@@ -47,6 +48,18 @@ export default defineConfig({
               options: {
                 cacheName: "flamme-pages",
                 networkTimeoutSeconds: 3,
+              },
+            },
+            // 2. Règle spécifique pour intercepter et stocker TOUTES les images (CacheFirst)
+            {
+              urlPattern: ({ request }) => request.destination === "image",
+              handler: "CacheFirst",
+              options: {
+                cacheName: "flamme-images-cache",
+                expiration: {
+                  maxEntries: 300,
+                  maxAgeSeconds: 60 * 60 * 24 * 365, // Enregistré pour 1 an
+                },
               },
             },
             {
