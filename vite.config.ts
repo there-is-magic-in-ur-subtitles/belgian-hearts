@@ -5,8 +5,61 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  vite: {
+    plugins: [
+      VitePWA({
+        registerType: "autoUpdate",
+        injectRegister: null,
+        filename: "sw.js",
+        devOptions: { enabled: false },
+        manifest: {
+          id: "/",
+          name: "Flamme — Brussels",
+          short_name: "Flamme",
+          description: "A touch-friendly Brussels profile discovery experience.",
+          start_url: "/",
+          scope: "/",
+          display: "standalone",
+          background_color: "#f4f5f7",
+          theme_color: "#ff4458",
+          icons: [
+            { src: "/icons/flamme-192.png", sizes: "192x192", type: "image/png" },
+            { src: "/icons/flamme-512.png", sizes: "512x512", type: "image/png" },
+            {
+              src: "/icons/flamme-512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "maskable",
+            },
+          ],
+        },
+        workbox: {
+          globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+          maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+          navigateFallbackDenylist: [/^\/~oauth/],
+          runtimeCaching: [
+            {
+              urlPattern: ({ request }) => request.mode === "navigate",
+              handler: "NetworkFirst",
+              options: {
+                cacheName: "flamme-pages",
+                networkTimeoutSeconds: 3,
+              },
+            },
+            {
+              urlPattern: ({ url }) =>
+                url.origin === self.location.origin && url.pathname.startsWith("/assets/"),
+              handler: "CacheFirst",
+              options: { cacheName: "flamme-assets" },
+            },
+          ],
+        },
+      }),
+    ],
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
