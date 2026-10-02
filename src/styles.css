@@ -132,13 +132,29 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+--sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.551 0.027 264.364);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
+    /* Bloque la sélection bleue et le menu Copier/Chercher au contact du stylet */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
-}
+
+  /* Bloque le drag&drop des images */
+  img {
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+ }
+
