@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { registerOfflineSupport } from "../lib/register-sw";
 
 function NotFoundComponent() {
   return (
@@ -81,6 +82,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Flamme" },
       { name: "description", content: "Brussels profile discovery." },
       { name: "author", content: "Flamme" },
+      { name: "theme-color", content: "#ff4458" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { property: "og:title", content: "Flamme" },
       { property: "og:description", content: "Brussels profile discovery." },
       { property: "og:type", content: "website" },
@@ -92,6 +96,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/icons/flamme-192.png" },
     ],
   }),
   shellComponent: RootShell,
@@ -116,6 +122,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    void registerOfflineSupport();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

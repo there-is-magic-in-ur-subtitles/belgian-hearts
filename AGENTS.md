@@ -12,3 +12,4 @@
 ## Project architecture
 
 - Keep the mobile experience self-contained in `public/app.html`; this preserves the requested direct-run, single-file deliverable.
+- Register the generated offline worker only through `src/lib/register-sw.ts`; one guarded entry prevents stale preview caches.
