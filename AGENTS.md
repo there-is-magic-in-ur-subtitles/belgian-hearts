@@ -13,3 +13,4 @@
 
 - Keep the mobile experience self-contained in `public/app.html`; this preserves the requested direct-run, single-file deliverable.
 - Register the generated offline worker only through `src/lib/register-sw.ts`; one guarded entry prevents stale preview caches.
+- Shuffle existing and newly uploaded profile pools separately, then interleave them proportionally; this avoids clusters while preserving each profile's photos.
